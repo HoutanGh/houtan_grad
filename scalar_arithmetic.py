@@ -14,8 +14,8 @@ d = a*b + c
 
 from helper_functions import trace, draw_trace
 
-
-draw_trace(d).render('graph', format='png', view=True)
+graph = draw_trace(d)
+graph.render('graph', format='png', view=True)
 
 
 
