@@ -17,23 +17,27 @@ L = e * f; L.label = 'L'
 
 from helper_functions import trace, draw_trace
 
+# graph = draw_trace(L)
+# graph.render('graph_L', format='png', view=True)
+
+# from helper_functions import build_topo
+
+
+# topo = build_topo(L)
+# print(topo)
+# L.grad = 1.0
+# print(L._prev)
+# L._backward()
+
+
+
+# for node in reversed(topo):
+#     node._backward()
+
+# graph = draw_trace(L)
+# graph.render('graph_with_grads', format='png', view=True)
+
+L.backward()
 graph = draw_trace(L)
-graph.render('graph_L', format='png', view=True)
-
-from helper_functions import build_topo
-
-
-topo = build_topo(L)
-print(topo)
-L.grad = 1.0
-print(L._prev)
-L._backward()
-
-
-
-for node in reversed(topo):
-    node._backward()
-
-graph = draw_trace(L)
-graph.render('graph_with_grads', format='png', view=True)
+graph.render('graph_grad_class', format='png', view=True)
 

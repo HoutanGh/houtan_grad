@@ -44,6 +44,21 @@ class Value:
         out._backward = _backward
 
         return out
+    
+    def backward(self):
+        topo = []
+        visited = set()
+        def build(node):
+            if node not in visited:
+                visited.add(node)
+                for child in node._prev:
+                    build(child)
+                topo.append(node)
+        build(self)
+
+        self.grad = 1.0
+        for x in reversed(topo):
+            x._backward()
 
 
     
