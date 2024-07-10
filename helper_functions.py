@@ -1,5 +1,5 @@
 from graphviz import Digraph
-from value import Value
+from my_grad.value import Value
 
 # function for traversing through computational graph created by Value objects
 
@@ -10,7 +10,7 @@ def trace(root):
     def build(x):
         if x not in nodes:
             nodes.add(x)
-            for child in x._prev: # iterates through the list of the most recent values that make up v
+            for child in x._prev: # iterates through the list of the most recent values that make up x
                 edges.add((child, x))
                 build(child) 
         
@@ -24,7 +24,7 @@ def draw_trace(root):
 
     for n in nodes:
         u_id = str(id(n)) # returns identity of object
-        dot.node(name=u_id, label=f"{{ data {n.data:.4f} }}", shape='record')
+        dot.node(name=u_id, label=f"{{ {n.label} | data {n.data:.4f} | grad {n.grad:.4f} }}", shape='record')
 
 
         if n._op: # if an operation has been done, so its not the end of the graph
@@ -36,5 +36,20 @@ def draw_trace(root):
     
     return dot
 
+# building a topological graph, through topological sorting
+
+def build_topo(node):
+    topo = []
+    visited = set()
+    
+    def build(node):
+        if node not in visited:
+            visited.add(node)
+            for child in node._prev:
+                build(child)
+            topo.append(node)
+    
+    build(node)
+    return topo
 
     
