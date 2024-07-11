@@ -14,6 +14,10 @@ class Neuron:
         out = act.tanh()
         return out
     
+    # want to be able to carry out actions on all the parameters
+    def parameters(self):
+        return self.w +[self.b]
+    
 class Layer:
     def __init__(self, n_in, n_out):
         self.neurons = [Neuron(n_in) for _ in range(n_out)] # creates the number of neurons to match n_out?
@@ -21,6 +25,10 @@ class Layer:
     def __call__(self, x):
         outs = [n(x) for n in self.neurons]
         return outs[0] if len(outs) == 1 else outs
+    
+    def parameters(self):
+        return [p for neuron in self.neurons for p in neuron.paramters()]
+
 
 class MPL: #multi-layer perceptron
     def __init__(self, n_in, n_outs):
@@ -32,4 +40,7 @@ class MPL: #multi-layer perceptron
         for layer in self.layers:
             x = layer(x)
         return x
+    
+    def parameters(self):
+        return [p for layer in self.layers for p in  layer.parameters()]
         
