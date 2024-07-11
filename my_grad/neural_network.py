@@ -1,6 +1,7 @@
 import random
 from value import Value
 
+# neural network library
 
 class Neuron:
     def __init__(self, n_in):
@@ -15,11 +16,20 @@ class Neuron:
     
 class Layer:
     def __init__(self, n_in, n_out):
-        self.neurons = [Neuron(n_in) for _ in range(n_out)]
+        self.neurons = [Neuron(n_in) for _ in range(n_out)] # creates the number of neurons to match n_out?
 
+    def __call__(self, x):
+        outs = [n(x) for n in self.neurons]
+        return outs[0] if len(outs) == 1 else outs
 
-a = Neuron(2)
-b = Layer(2, 3)
-print(b.neurons)
-    
+class MPL: #multi-layer perceptron
+    def __init__(self, n_in, n_outs):
+        size = [n_in] + n_outs # outs are already a list
+
+        self.layers = [Layer(size[i], size[i+1]) for i in range(len(n_outs))]
+
+    def __call__(self, x):
+        for layer in self.layers:
+            x = layer(x)
+        return x
         
