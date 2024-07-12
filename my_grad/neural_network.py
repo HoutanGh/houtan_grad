@@ -3,6 +3,17 @@ from value import Value
 
 # neural network library
 
+# library class for defining zero_grad
+
+class Library:
+    def zero_grad(self):
+        for p in self.parameters():
+            p.grad = 0
+    
+    def parameters(self):
+        return []
+    
+
 class Neuron:
     def __init__(self, n_in):
         self.w = [Value(random.uniform(-1, 1)) for _ in range(n_in)] # wx_i + b for i inputs
@@ -18,6 +29,10 @@ class Neuron:
     def parameters(self):
         return self.w +[self.b]
     
+    def __repr__(self):
+        return f"TANH"
+    
+
 class Layer:
     def __init__(self, n_in, n_out):
         self.neurons = [Neuron(n_in) for _ in range(n_out)] # creates the number of neurons to match n_out?

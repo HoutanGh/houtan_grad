@@ -62,6 +62,16 @@ class Value:
 
         return out
     
+    # another popular activation fucntion, defined a the positive part of its argument
+
+    def relu(self):
+        out = Value(0 if self.data < 0 else self.data, (self, ), 'ReLU')
+
+        def _backward():
+            self.grad += (out.data > 0) * out.grad # returns 0 if in the negative part of the relu function
+        out._backward = _backward
+        return out
+    
     def exp(self):
         x = self.data
         out = Value(math.exp(x), (self, ), op='exp')
