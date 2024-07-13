@@ -12,7 +12,7 @@ class Value:
         self.grad = 0
     
     def __repr__(self) -> str:
-        return f"Value(data={self.data})"
+        return f"Value(data={self.data}, grad={self.grad})"
     
     def __add__(self, other):
         # need to make a case for non-value objects
