@@ -1,5 +1,6 @@
 import random
-from value import Value
+from my_grad.value import Value
+
 
 # neural network library
 
@@ -14,7 +15,7 @@ class Library:
         return []
     
     
-class Neuron:
+class Neuron(Library):
     def __init__(self, n_in, non_lin=''):
         self.w = [Value(random.uniform(-1, 1)) for _ in range(n_in)] # wx_i + b for i inputs
         self.b = Value(random.uniform(-1, 1))
@@ -38,7 +39,7 @@ class Neuron:
         return f"{self.non_lin.capitalize()}Neuron({len(self.w)})"
     
 
-class Layer:
+class Layer(Library):
 
     # adding **kwargs so that we can initialise neurons within Layers of the MLP with the activation functions defined as well as no activation function
     def __init__(self, n_in, n_out, **kwargs): # not just using non_lin so that we don't have a default activation function
@@ -49,17 +50,17 @@ class Layer:
         return outs[0] if len(outs) == 1 else outs
     
     def parameters(self):
-        return [p for neuron in self.neurons for p in neuron.paramters()]
+        return [p for neuron in self.neurons for p in neuron.parameters()]
     
-    def __rep__(self):
+    def __repr__(self):
         return f"Layer of [{', '.join(str(n) for n in self.neurons)}]"
 
 
-class MPL: #multi-layer perceptron
-    def __init__(self, n_in, n_outs):
+class MLP(Library): #multi-layer perceptron
+    def __init__(self, n_in, n_outs, non_lin=''):
         size = [n_in] + n_outs # outs are already a list
 
-        self.layers = [Layer(size[i], size[i+1]) for i in range(len(n_outs))]
+        self.layers = [Layer(size[i], size[i+1], non_lin = non_lin) for i in range(len(n_outs))]
 
     def __call__(self, x):
         for layer in self.layers:
@@ -68,4 +69,7 @@ class MPL: #multi-layer perceptron
     
     def parameters(self):
         return [p for layer in self.layers for p in  layer.parameters()]
+    
+    def __repr__(self):
+        return f"MLP: [{', '.join(str(layer) for layer in self.layers)}]"
         
