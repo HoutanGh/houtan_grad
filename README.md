@@ -3,6 +3,8 @@
 
 This repository contains a simple neural network library implemented in Python, along with a custom `Value` class for automatic differentiation. It is purpose-built for scalar numbers and does not have implementation for tensors (I will try and do this later on in another library).
 
+The library is in the subfolder my_grad and the other files outside this subfolder are implementations of the library and testing of its functionality.
+
 ## Files
 
 - `neural_network.py`: Defines the neural network components.
