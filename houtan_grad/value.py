@@ -33,6 +33,7 @@ class Value:
         def _backward():
             self.grad += (other * self.data**(other - 1)) * out.grad
         out._backward = _backward
+        return out
     
     def __mul__(self, other):
         other = other if isinstance(other, Value) else Value(other)
