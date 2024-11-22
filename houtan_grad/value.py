@@ -5,23 +5,24 @@ class Value:
         # Want to keep track of all the data of values that make current data, so introduce _children
 
         self.data = data
-        self._prev = set(_children) # This is for efficiency, removing duplicates
-        self._op = _op
-        self.label = label
-        self._backward = lambda: None
-        self.grad = 0
+        self._prev = set(_children) # for tracking of parents
+        self._op = _op # operations
+        self.label = label # helpful for debugging
+        self._backward = lambda: None # for computing gradients
+        self.grad = 0 #  calculating the gradients of all the nodes w.r.t to the loss fucntion
     
     def __repr__(self) -> str:
         return f"Value(data={self.data}, grad={self.grad})"
     
     def __add__(self, other):
         # need to make a case for non-value objects
-        other = other if isinstance(other, Value) else Value(other)
-        out = Value(self.data + other.data, (self, other), '+')
+        other = other if isinstance(other, Value) else Value(other) # if other not a value object wrap it in value
+        out = Value(self.data + other.data, (self, other), '+') # == c = a.__add__(b)
 
         def _backward():
             self.grad += 1.0 * out.grad
             other.grad += 1.0 * out.grad
+        
         out._backward = _backward # assigning this nested function to the self._backward from __init__
         
         return out
