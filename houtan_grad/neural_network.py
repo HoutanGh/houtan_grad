@@ -1,5 +1,5 @@
 import random
-from my_grad.value import Value
+from houtan_grad.value import Value
 
 
 # neural network library
@@ -14,6 +14,7 @@ class Library:
     def parameters(self):
         return []
 
+# dic for mappings
 ACTIVATIONS = {
         'relu': lambda x: x.relu(),
         'tanh': lambda x: x.tanh()
@@ -28,20 +29,24 @@ class Neuron(Library):
     def __call__(self, x):
         act = sum((w_i * x_i for w_i, x_i in zip(self.w, x)), self.b) # sum takes second argument that is where it should start from
         # raw activation defined and now need to pass through non-linearity
-        return ACTIVATIONS.get(self.non_lin, lambda x: x)(act)    
+        # look through dic to find the activation function chosen
+        return ACTIVATIONS.get(self.non_lin, lambda x: x)(act) # equivalent to act.self.non_lin
+        
     # want to be able to carry out actions on all the parameters
     def parameters(self):
-        return self.w +[self.b]
-    
+        return self.w + [self.b]
+
+    # for clarity
     def __repr__(self):
-        return f"{self.non_lin.capitalize()}Neuron({len(self.w)})"
+        return f"{self.non_lin.capitalize() if self.non_lin else 'Linear'}Neuron({len(self.w)})"
     
 
 class Layer(Library):
 
     # adding **kwargs so that we can initialise neurons within Layers of the MLP with the activation functions defined as well as no activation function
     def __init__(self, n_in, n_out, **kwargs): # not just using non_lin so that we don't have a default activation function
-        self.neurons = [Neuron(n_in, **kwargs) for _ in range(n_out)] # creates the number of neurons to match n_out?
+        
+        self.neurons = [Neuron(n_in, **kwargs) for _ in range(n_out)] # creates n_out neurons with each taking n_in inputs
 
     def __call__(self, x):
         outs = [n(x) for n in self.neurons]
@@ -71,8 +76,9 @@ class MLP(Library): #multi-layer perceptron
     def __repr__(self):
         return f"MLP: [{', '.join(str(layer) for layer in self.layers)}]"
 
+# stochastic gradient descent
 class SGD:
-    def __init__(self, parameters lr=0.01):
+    def __init__(self, parameters, lr=0.01):
         self.parameters = parameters
         self.lr = lr
 
