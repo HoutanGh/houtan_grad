@@ -1,4 +1,5 @@
 # houtan_grad
+##### going to do all the basics first, then improve code, pytorch is very different in its setup
 # Neural Network Library
 
 This repository contains a simple neural network library implemented in Python, along with a custom `Value` class for automatic differentiation. It is purpose-built for scalar numbers and does not have implementation for tensors (I will try and do this later on in another library).
