@@ -28,7 +28,7 @@ class Value:
         return out
     
     def __pow__(self, other):
-        assert isinstance(self, (int, float)) # accomodating for non-float can be difficult
+        assert isinstance(other, (int, float)), "exponent must be scalar (int or float)"
         out = Value(self.data**other, (self, ), f"**{other}")
 
         def _backward():
@@ -122,6 +122,15 @@ class Value:
 
         def _backward(self):
             self.grad += (-math.sin(self.data)) * out.grad
+        out._backward = _backward
+
+        return out
+    
+    def abs(self):
+        out = Value(abs(self.data), (self,), 'abs')
+
+        def _backward():
+            self.grad += (1 if self.data >= 0 else -1) * out.grad
         out._backward = _backward
 
         return out
