@@ -97,6 +97,36 @@ class Value:
         for x in reversed(topo):
             x._backward()
 
+    def log(self):
+        assert self.data > 0, "Logarithm is only defined for positive numbers"
+        out = Value(math.log(self.data), (self, ), 'log')
+
+        def _backward():
+            self.grad = (1 / self.data) * out.grad
+        out._backward = _backward
+
+        return out
+    
+    def sqrt(self):
+        assert self.data >= 0, "only defined for non-negative numbers"
+        out = Value(self.data ** 0.5, (self, ), 'sqrt')
+
+        def _backward():
+            self.grad = (0.5 / (self.data ** 0.5)) * out.grad
+        out._backward = _backward
+
+        return out
+
+    def cos(self):
+        out = Value(math.cos(self.data), (self, ), 'cos')
+
+        def _backward(self):
+            self.grad += (-math.sin(self.data)) * out.grad
+        out._backward = _backward
+
+        return out
+
+
     def __neg__(self):
         return self * -1
     
