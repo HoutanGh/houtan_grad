@@ -1,5 +1,5 @@
 import random
-from houtan_grad.value import Value
+from value import Value
 
 
 # neural network library
