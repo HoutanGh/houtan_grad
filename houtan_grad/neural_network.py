@@ -60,10 +60,16 @@ class Layer(Library):
 
 
 class MLP(Library): #multi-layer perceptron
-    def __init__(self, n_in, n_outs, non_lin=''):
-        size = [n_in] + n_outs # outs are already a list
+    # non_lin - list of activation functions
+    def __init__(self, n_in, n_outs, non_lins=None):
+        self.size = [n_in] + n_outs # outs are already a list
+        self.non_lins = non_lins if non_lins is not None else [''] * len(n_outs)
 
-        self.layers = [Layer(size[i], size[i+1], non_lin = non_lin) for i in range(len(n_outs))]
+        # validate the length of non_lins
+        assert len(self.non_lins) == len(n_outs), \
+            f"Expected {len(n_outs)} activation function but got {len(self.non_lins)}"
+        
+        self.layers = [Layer(self.size[i], self.size[i+1], non_lin = self.non_lins[i]) for i in range(len(n_outs))]
 
     def __call__(self, x):
         for layer in self.layers:
@@ -74,7 +80,10 @@ class MLP(Library): #multi-layer perceptron
         return [p for layer in self.layers for p in  layer.parameters()]
     
     def __repr__(self):
-        return f"MLP: [{', '.join(str(layer) for layer in self.layers)}]"
+        details = [
+            f"Layer({self.size[i + 1]} Neurons, {self.non_lins[i] if self.non_lins[i] else 'Linear'})" for i in range(len(self.layers))
+        ]
+        return f"MLP: [{', '.join(details)}]"
 
 # stochastic gradient descent
 class SGD:
